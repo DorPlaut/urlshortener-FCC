@@ -13,7 +13,6 @@ const Link = require('./shortURL');
 let ShortUrlListFromDB = [];
 
 // Basic Configuration
-const port = process.env.PORT;
 
 app.use(express.urlencoded());
 
@@ -80,7 +79,10 @@ app.post(
 const start = async () => {
   try {
     await connectDB(process.env.MONGO_URI);
-    app.listen(port, console.log(`server is listening on port ${port}`));
+    app.listen(
+      process.env.PORT,
+      console.log(`server is listening on port ${port}`)
+    );
   } catch (error) {
     console.log(error);
   }
