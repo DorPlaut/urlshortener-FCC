@@ -45,7 +45,7 @@ app.get(
     shortURl = req.params.shortURL;
     const selectedLink = await Link.findOne({ short_url: shortURl });
     if (!selectedLink) {
-      res.status(404).send('Short Url Dossent Exist');
+      res.json({ error: 'invalid url' });
     }
     fullUrl = selectedLink.original_url;
     console.log(shortURl);
@@ -60,7 +60,7 @@ app.post(
   asyncWrapper(async (req, res) => {
     const inputUrl = req.body;
     if (/^(ftp|http|https):\/\/[^ "]+$/.test(inputUrl.original_url) == false) {
-      return res.status(404).json({ error: 'invalid url' });
+      return res.json({ error: 'invalid url' });
     }
     const shortUrl = getShortUrl(ShortUrlListFromDB);
     const resultJsonString = {
@@ -70,7 +70,7 @@ app.post(
     const link = await Link.create(resultJsonString);
     console.log(resultJsonString);
     link.save((err, data) => {
-      res.status(201).json(resultJsonString);
+      res.json(resultJsonString);
     });
   })
 );
