@@ -33,8 +33,6 @@ app.get(
     for (let i = 0; i < allLinks.length; i++) {
       ShortUrlListFromDB.push(allLinks[i].short_url);
     }
-
-    console.log(ShortUrlListFromDB);
   })
 );
 
@@ -42,13 +40,12 @@ app.get(
 app.get(
   '/api/shorturl/:shortURL',
   asyncWrapper(async (req, res) => {
-    shortURl = req.params.shortURL;
-    const selectedLink = await Link.findOne({ short_url: shortURl });
+    let shortURL = req.params.shortURL;
+    const selectedLink = await Link.findOne({ short_url: shortURL });
     if (!selectedLink) {
       res.json({ error: 'invalid url' });
     }
-    fullUrl = selectedLink.original_url;
-    console.log(shortURl);
+    let fullUrl = selectedLink.original_url;
     res.redirect(fullUrl);
   })
 );
@@ -59,18 +56,17 @@ app.post(
   jsonParser,
   asyncWrapper(async (req, res) => {
     const inputUrl = req.body;
-    if (/^(ftp|http|https):\/\/[^ "]+$/.test(inputUrl.original_url) == false) {
+    if (/^(ftp|http|https):\/\/[^ "]+$/.test(inputUrl.url) == false) {
       return res.json({ error: 'invalid url' });
     }
     const shortUrl = getShortUrl(ShortUrlListFromDB);
     const resultJsonString = {
-      original_url: inputUrl.original_url,
+      original_url: inputUrl.url,
       short_url: shortUrl,
     };
     const link = await Link.create(resultJsonString);
-    console.log(resultJsonString);
     link.save((err, data) => {
-      res.json(resultJsonString);
+      res.json({ original_url: link.original_url, short_url: link.short_url });
     });
   })
 );
