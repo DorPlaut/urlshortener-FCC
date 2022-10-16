@@ -18,7 +18,7 @@ const port = process.env.PORT;
 app.use(express.urlencoded());
 
 var cors = require('cors');
-app.use(cors({ optionsSuccessStatus: 200 }));
+app.use(cors());
 
 app.use('/public', express.static(`${process.cwd()}/public`));
 
