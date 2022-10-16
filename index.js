@@ -60,7 +60,7 @@ app.post(
   asyncWrapper(async (req, res) => {
     const inputUrl = req.body;
     if (/^(ftp|http|https):\/\/[^ "]+$/.test(inputUrl.original_url) == false) {
-      return res.status(400).send('Please enter valid URL');
+      return res.status(404).json({ error: 'invalid url' });
     }
     const shortUrl = getShortUrl(ShortUrlListFromDB);
     const resultJsonString = {
